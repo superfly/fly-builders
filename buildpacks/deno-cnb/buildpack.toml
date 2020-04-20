@@ -1,0 +1,12 @@
+# Buildpack API version
+api = "0.2"
+
+# Buildpack ID and metadata
+[buildpack]
+id = "io.fly.deno"
+version = "0.0.2"
+name = "Deno Buildpack"
+
+# Stacks that the buildpack will work with
+[[stacks]]
+id = "io.fly.stacks.bionic"

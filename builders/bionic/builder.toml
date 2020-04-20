@@ -1,0 +1,13 @@
+[[buildpacks]]
+uri="../../buildpacks/deno-cnb"
+
+[[order]]
+  [[order.group]]
+  id="io.fly.deno"
+  version="0.0.2"
+
+[stack]
+id = "io.fly.stacks.bionic"
+run-image="flyio/buildpack-stack-run:bionic"
+build-image="flyio/buildpack-stack-build:bionic"
+

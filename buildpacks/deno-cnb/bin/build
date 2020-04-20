@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> Deno Buildpack"
+
+# 1. GET ARGS
+layersdir=$1
+
+# 2. DOWNLOAD Deno
+echo "---> Downloading and extracting Deno"
+denolayer="$layersdir"/deno
+mkdir -p "$denolayer"
+deno_url=https://deno.land/x/install/install.sh
+export DENO_INSTALL="$denolayer" 
+curl -dsSL "$deno_url" | sh
+
+
+# 3. MAKE DENO AVAILABLE DURING LAUNCH
+echo -e 'launch = true' > "$denolayer.toml"
+
+
+# 4. MAKE DENO AVAILABLE TO THIS SCRIPT
+export PATH="$denolayer"/bin:$PATH
+
+# 5. Cache deno files in same layer
+export DENO_DIR="$denolayer"
+deno cache server.ts
+
+echo 'processes = [{ type = "web", command = "DENO_DIR=/layers/io.fly.deno/deno deno -A server.ts", direct=false}]' > "$layersdir/launch.toml"
