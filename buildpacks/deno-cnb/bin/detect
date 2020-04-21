@@ -4,3 +4,4 @@ set -eo pipefail
 if [[ ! -f server.ts ]]; then
    exit 100
 fi
+

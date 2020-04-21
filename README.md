@@ -2,6 +2,12 @@
 
 ## How to build flyio/builder
 
+### TL;DR 
+
+make build-bionic # Make everything locally
+make linux-deploy # Push images out to public
+make clean-linux  # Clean out local images
+
 ### Start here:
 
 To get up and running, [install `pack`](https://buildpacks.io/docs/install-pack/) and run `make build-linux` or `make build-windows`, depending on your choice of target OS.
@@ -13,8 +19,8 @@ We'll need that later
 
 We need a base stack with curl and unzip.
 
-cd stacks
-./build-stack.sh bionic
+
+stacks/build-stack.sh stacks/bionic
 
 (prefixes are already hard coded in)
 (If there's an error regarding a lack of realpath, brew install coreutils)
@@ -49,8 +55,9 @@ This is now ready to be merged with the stack to make a builder
 
 ### Creating the Builder
 
+At the repo root, run
+
 ```
-cd builders/bionic
 pack create-builder flyio/builder --builder-config builders/bionic/builder.toml --publish
 ```
 
@@ -65,6 +72,18 @@ docker run -it -p 8080:8080 test-deno-app
 ### Run with fly
 
 flyctl apps create --builder flyio/builder
+
+### Deno permissions
+
+A `.permissons` file will be picked up and used as the permissions section of the deno command.
+
+e.g. on the example Deno app -
+
+```
+--allow-env --allow-net
+```
+
+This setting defaults to the permissive `-A` if no .permissions is present.
 
 # Quick Reference
 - [Create a Buildpack Tutorial](https://buildpacks.io/docs/buildpack-author-guide/create-buildpack/) &rarr; Tutorial to get you started on your first Cloud Native Buildpack

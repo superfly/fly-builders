@@ -26,4 +26,12 @@ export PATH="$denolayer"/bin:$PATH
 export DENO_DIR="$denolayer"
 deno cache server.ts
 
-echo 'processes = [{ type = "web", command = "DENO_DIR=/layers/io.fly.deno/deno deno -A server.ts", direct=false}]' > "$layersdir/launch.toml"
+permissions="-A"
+
+if [[ -f .permissions ]]; then
+   permissions=$(cat .permissions)
+fi
+
+command="DENO_DIR=$denolayer/deno deno $permissions server.ts"
+
+echo "processes = [{ type = \"web\", command = \"$command\", direct=false}]" > "$layersdir/launch.toml"
