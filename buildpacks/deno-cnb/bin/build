@@ -26,12 +26,12 @@ export PATH="$denolayer"/bin:$PATH
 export DENO_DIR="$denolayer"
 deno cache server.ts
 
-permissions="-A"
+permissions=""
 
 if [[ -f .permissions ]]; then
    permissions=$(cat .permissions)
 fi
 
-command="DENO_DIR=$denolayer/deno deno $permissions server.ts"
+command="DENO_DIR=$denolayer deno $permissions server.ts"
 
 echo "processes = [{ type = \"web\", command = \"$command\", direct=false}]" > "$layersdir/launch.toml"
