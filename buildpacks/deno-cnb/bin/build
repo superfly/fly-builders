@@ -32,6 +32,6 @@ if [[ -f .permissions ]]; then
    permissions=$(cat .permissions)
 fi
 
-command="DENO_DIR=$denolayer deno $permissions server.ts"
+command="DENO_DIR=$denolayer deno run $permissions server.ts"
 
 echo "processes = [{ type = \"web\", command = \"$command\", direct=false}]" > "$layersdir/launch.toml"
