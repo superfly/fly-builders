@@ -21,6 +21,7 @@ echo -e 'launch = true' > "$denolayer.toml"
 
 # 4. MAKE DENO AVAILABLE TO THIS SCRIPT
 export PATH="$denolayer"/bin:$PATH
+deno --version
 
 # 5. Cache deno files in same layer
 export DENO_DIR="$denolayer"
