@@ -18,6 +18,11 @@ curl -dsSL "$deno_url" | sh
 # 3. MAKE DENO AVAILABLE DURING LAUNCH
 echo -e 'launch = true' > "$denolayer.toml"
 
+unstable=""
+
+if [[ -f .unstable ]]; then
+   unstable="--unstable"
+fi
 
 # 4. MAKE DENO AVAILABLE TO THIS SCRIPT
 export PATH="$denolayer"/bin:$PATH
@@ -25,7 +30,7 @@ deno --version
 
 # 5. Cache deno files in same layer
 export DENO_DIR="$denolayer"
-deno cache server.ts
+deno cache $unstable server.ts
 
 permissions=""
 
@@ -33,6 +38,6 @@ if [[ -f .permissions ]]; then
    permissions=$(cat .permissions)
 fi
 
-command="DENO_DIR=$denolayer deno run $permissions server.ts"
+command="DENO_DIR=$denolayer deno run $permissions $unstable server.ts"
 
 echo "processes = [{ type = \"web\", command = \"$command\", direct=false}]" > "$layersdir/launch.toml"
