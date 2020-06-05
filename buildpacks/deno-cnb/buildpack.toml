@@ -4,7 +4,7 @@ api = "0.2"
 # Buildpack ID and metadata
 [buildpack]
 id = "io.fly.deno"
-version = "0.0.2"
+version = "0.0.3"
 name = "Deno Buildpack"
 
 # Stacks that the buildpack will work with

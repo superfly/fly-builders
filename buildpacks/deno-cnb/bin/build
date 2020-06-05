@@ -3,8 +3,27 @@ set -eo pipefail
 
 echo "---> Deno Buildpack"
 
+if [[ ! -f .config ]]; then
+   echo "Deno Buildpack has changed."
+   echo "Create a .config file with the following"
+   echo
+   echo 'permissions=""' 
+   echo 'unstable=true'
+   echo 'deno_version=version'
+   echo
+   echo 'Omit settings to get defaults'
+   exit 1
+fi
+
 # 1. GET ARGS
 layersdir=$1
+
+permissions=""
+
+if [[ -f .config ]]; then
+  source .config
+  # cat .config | while read i; do export $i; done
+fi
 
 # 2. DOWNLOAD Deno
 echo "---> Downloading and extracting Deno"
@@ -12,32 +31,30 @@ denolayer="$layersdir"/deno
 mkdir -p "$denolayer"
 deno_url=https://deno.land/x/install/install.sh
 export DENO_INSTALL="$denolayer" 
-curl -dsSL "$deno_url" | sh
-
+echo $deno_url
+[[ $deno_version != "" ]] && verarg="-s $deno_version"
+curl -fsSL "$deno_url" | sh $verarg
 
 # 3. MAKE DENO AVAILABLE DURING LAUNCH
 echo -e 'launch = true' > "$denolayer.toml"
 
-unstable=""
-
-if [[ -f .unstable ]]; then
-   unstable="--unstable"
-fi
+[[ $unstable == "true" ]] && unstablearg="--unstable"
 
 # 4. MAKE DENO AVAILABLE TO THIS SCRIPT
 export PATH="$denolayer"/bin:$PATH
+
 deno --version
 
 # 5. Cache deno files in same layer
 export DENO_DIR="$denolayer"
-deno cache $unstable server.ts
+deno cache $unstablearg server.ts
 
-permissions=""
-
-if [[ -f .permissions ]]; then
-   permissions=$(cat .permissions)
+echo "Using Deno version $deno_version"
+echo "Built with $permissions"
+if [[ "$unstable" == "true" ]]; then 
+  echo "and unstable is on"
 fi
 
-command="DENO_DIR=$denolayer deno run $permissions $unstable server.ts"
+command="DENO_DIR=$denolayer deno run $permissions $unstablearg server.ts"
 
 echo "processes = [{ type = \"web\", command = \"$command\", direct=false}]" > "$layersdir/launch.toml"

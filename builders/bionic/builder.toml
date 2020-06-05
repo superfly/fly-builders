@@ -4,7 +4,7 @@ uri="../../buildpacks/deno-cnb"
 [[order]]
   [[order.group]]
   id="io.fly.deno"
-  version="0.0.2"
+  version="0.0.3"
 
 [stack]
 id = "io.fly.stacks.bionic"
