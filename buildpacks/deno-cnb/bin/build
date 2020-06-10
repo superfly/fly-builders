@@ -21,8 +21,10 @@ layersdir=$1
 permissions=""
 
 if [[ -f .config ]]; then
-  source .config
-  # cat .config | while read i; do export $i; done
+  # Clean line ends
+  tr -d '\r' <.config >/tmp/.config
+  source /tmp/.config
+  rm /tmp/.config
 fi
 
 # 2. DOWNLOAD Deno
